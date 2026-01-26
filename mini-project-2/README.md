@@ -61,12 +61,11 @@ mini-project-2/
 ├── README.md
 ├── requirements.txt
 ├── data/
-│   └── (dataset or download instructions)
+│   └── heart.csv
 ├── notebooks/
 │   ├── 01_exploration.ipynb
 │   └── 02_modeling.ipynb
 └── src/
-    └── (any Python scripts if needed)
 ```
 
 ## Setup Instructions
