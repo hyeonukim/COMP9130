@@ -102,17 +102,21 @@ Confusion matrices and ROC curves are also used for visualization and deeper ana
 
 ## Results Summary
 
-| Model               | Accuracy | Precision | Recall   | F1 Score | ROC-AUC  |
-| ------------------- | -------- | --------- | -------- | -------- | -------- |
-| Logistic Regression | 0.848780 | 0.824561  | 0.895238 | 0.858447 | 0.934952 |
-| Decision Tree       | 0.985366 | 1.000000  | 0.971429 | 0.985507 | 0.985714 |
-| KNN                 | 0.824390 | 0.841584  | 0.809524 | 0.825243 | 0.937762 |
+| Model               | Accuracy | Precision | Recall | F1 Score | ROC-AUC |
+|---------------------|----------|-----------|--------|----------|---------|
+| Logistic Regression | 0.885246 | 0.882353 | 0.909091 | 0.895522 | 0.917749 |
+| Decision Tree       | 0.721311 | 0.766667 | 0.696970 | 0.730159 | 0.723485 |
+| KNN                 | 0.852459 | 0.833333 | 0.909091 | 0.869565 | 0.869589 |
 
 **Key Takeaways**:
 
-* The Decision Tree model achieved the highest performance across most metrics.
-* Logistic Regression provided strong baseline performance with high recall.
-* KNN slightly lagged behind in recall and F1 score.
+* Logistic Regression achieved the best overall performance, with the highest ROC-AUC (0.918) and a strong balance of accuracy, precision, and recall, making it the most reliable model in this comparison.
+
+* KNN demonstrated high recall (0.909), indicating strong ability to correctly identify patients with heart disease, though with slightly lower precision than Logistic Regression.
+
+* Decision Tree showed noticeably lower performance across all metrics, suggesting weaker generalization and higher sensitivity to the specific train–test split compared to the other models.
+
+* Both Logistic Regression and KNN models can be used for heart disease prediction as they both have high recall (0.909)
 
 ## Team Member Contributions
 
