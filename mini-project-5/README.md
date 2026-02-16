@@ -82,7 +82,7 @@ mini-project-5/
 - Regularization techniques:
   - BatchNormalization after each conv layer
   - Dropout (0.1, 0.15, 0.2)
-- Trained for 10 epochs
+- Trained for 25 epochs
 
 **Evaluation Metrics**
 - Accuracy (training, validation, test)
@@ -99,31 +99,36 @@ mini-project-5/
 - Train-Val Gap: 20.7% (severe overfitting)
 
 **Improved Model Performance**
-- Training Accuracy: 69.9%
-- Validation Accuracy: 64.3%
-- Test Accuracy: 65.5%
-- Weighted F1-Score: 0.65
-- Train-Val Gap: 5.5% (good generalization)
+- Training Accuracy: 80.9%
+- Validation Accuracy: 73.4%
+- Test Accuracy: 73.3%
+- Weighted F1-Score: 0.74
+- Train-Val Gap: 7.4% (moderate overfitting)
 
 **Key Findings**
 
-While the improved model achieved lower overall accuracy (65.5%) compared to the baseline (77.2%), it demonstrated significantly better generalization. The baseline model's 20.7% train-validation gap indicates it was memorizing training patterns rather than learning robust features. In contrast, the improved model's 5.5% gap shows that regularization techniques (augmentation, BatchNorm, dropout) successfully prevented overfitting.
+The improved model achieved 73.3% test accuracy compared to the baseline's 77.2%, a difference of only 4%. However, the improved model's 7.4% train-validation gap demonstrates significantly better generalization compared to the baseline's severe 20.7% gap. This shows that regularization techniques (augmentation, BatchNorm, dropout) successfully reduced overfitting while maintaining competitive accuracy.
 
-This demonstrates an important machine learning principle: high validation accuracy alone does not guarantee a good model if it comes at the cost of severe overfitting. The improved model's lower but more honest accuracy suggests it would perform more reliably on real-world data.
+This demonstrates an important machine learning principle: high validation accuracy alone does not guarantee a good model if it comes at the cost of severe overfitting. The improved model required 25 epochs to converge (compared to baseline's 10 epochs), but achieved more reliable performance that would generalize better to real-world data.
 
 **Per-Class Performance Insights**
 
-The baseline model performs particularly well on forest (F1: 0.92) and street (F1: 0.80) classes, but struggles with sea (F1: 0.76) due to visual similarity with other natural scenes. The improved model shows a different pattern, with strong forest classification (F1: 0.83) but weaker performance on glacier (F1: 0.50) and mountain (F1: 0.57), suggesting the regularization may have been too restrictive for these visually similar categories.
+Based on the confusion matrix analysis:
+- The baseline model performs particularly well on forest (86.1% per-class accuracy) and sea (87.3%), but struggles with glacier (66.0%) and mountain (64.2%)
+- The improved model shows stronger performance on buildings (90.8%) and forest (93.9%), but weaker performance on glacier (52.6%) and street (64.1%)
+- Both models struggle most with visually similar classes (glacier vs mountain), indicating this is an inherently difficult distinction in the dataset
+- The improved model's misclassification rate (26.7%) is only slightly higher than baseline's (22.8%), despite having much better generalization
 
 **Visualization Results**
 - Confusion matrices show class-specific performance differences between models
 - Feature visualizations reveal learned patterns in the first convolutional layer
-- Misclassification analysis identifies challenging image categories (glacier vs mountain, sea vs sky)
+- Misclassification analysis identifies that both models struggle most with glacier (34-35% misclassification rate) and mountain (35-36% misclassification rate)
+- Training curves show the improved model required more epochs due to the added complexity of augmentation and regularization
 
 ## Team Member Contributions
 
 * **Eric**
-  * 
+  * [To be filled in]
 
 * **Henry**
-  * 
+  * [To be filled in]
