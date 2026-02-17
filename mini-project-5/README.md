@@ -51,7 +51,7 @@ mini-project-5/
 
 1. Clone the repository:
 ```bash
-   git clone [your-repo-url]
+   git clone https://github.com/hyeonukim/COMP9130/tree/main/mini-project-5
    cd mini-project-5
 ```
 
