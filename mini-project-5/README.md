@@ -128,7 +128,14 @@ Based on the confusion matrix analysis:
 ## Team Member Contributions
 
 * **Eric**
-  * [To be filled in]
+  * Data Exploration & Preprocessing
+  * Baseline CNN (No Augmentation)
+  * Discussion
+  * report
 
 * **Henry**
-  * [To be filled in]
+  * Improved CNN (with Augmentation)
+  * Model Comparison & Analysis
+  * Discussion
+  * README.md
+  * requirements.txt
