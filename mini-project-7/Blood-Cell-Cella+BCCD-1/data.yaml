@@ -1,0 +1,14 @@
+names:
+- Platelets
+- RBC
+- WBC
+nc: 3
+roboflow:
+  license: CC BY 4.0
+  project: blood-cell-cella-bccd-lihfn
+  url: https://universe.roboflow.com/bccd-vhdu3/blood-cell-cella-bccd-lihfn/dataset/1
+  version: 1
+  workspace: bccd-vhdu3
+test: ../test/images
+train: ../train/images
+val: ../valid/images
