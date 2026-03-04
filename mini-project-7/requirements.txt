@@ -1,0 +1,12 @@
+ultralytics
+roboflow
+numpy
+matplotlib
+Pillow
+opencv-python
+PyYAML
+pandas
+seaborn
+torch
+torchvision
+pathlib
