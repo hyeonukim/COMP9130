@@ -1,7 +1,7 @@
 # Mini Project 8: Flood Area Image Segmentation
 
-**COMP 9130 Applied AI — Natural Disaster Damage Assessment**  
-Jacky Chen & Eric Kim | March 2026
+**Natural Disaster Damage Assessment**  
+Eric Kim & Jacky Chen | March 2026
 
 ---
 
@@ -83,9 +83,23 @@ Open `segmentation_local.ipynb` in Jupyter and run cells in order.
 | Full U-Net (CE) | 640x640 | 0.7824 | 0.7024 | **0.7424** | **0.8367** |
 | Full U-Net (CE+Dice) | 640x640 | 0.7675 | 0.6659 | 0.7167 | 0.8144 |
 
+### Training History 
+
+![Training History](/mini-project-8/figures/training_curves.png)
+
+Both models were trained for 35 epochs. Model A (CE) converged steadily, with val_loss improving from 1.98 at epoch 1 to a best of 0.2823 at epoch 33. ReduceLROnPlateau triggered at epoch 30, reducing the learning rate from 5e-4 to 2.5e-4 and producing the best checkpoints. Model B (CE+Dice) showed severe instability in early training: val_loss spiked as high as 29.6 at epoch 3 and did not meaningfully improve until epoch 15, finishing at a best val_loss of 0.4731.
+
 **Winner: Cross-Entropy model** — mIoU 0.7424, Mean Dice 0.8367
 
-The CE+Dice model underperformed due to early training instability (val_loss did not improve for 14 epochs, spiking to 29.6 at epoch 3). With mild class imbalance (58.7% / 41.3%), CE was sufficient.
+The CE+Dice model underperformed due to early training instability (val_loss did not improve for 14 epochs, spiking to 29.6 at epoch 3). With mild class imbalance (58.7% / 41.3%), CE was sufficient and the added Dice term introduced more noise than benefit.
+
+
+### Per Class Distribtion
+
+![Per Class Distribution](/mini-project-8/figures/per_class_distribution.png)
+
+The box plots show the spread of per-image IoU and Dice scores across the test set for each class. Background (blue) achieves consistently higher scores with a tighter distribution (IoU 0.7824, Dice 0.8712), reflecting the more visually consistent appearance of dry land and vegetation. Flood (orange) has a wider spread with more low-score outliers (IoU 0.7024, Dice 0.8022), indicating that some flood images are significantly harder to segment than others. The hardest cases are images where flood water is muddy or shallow, making it visually similar to wet soil or saturated vegetation.
+
 
 ### Confusion Matrix (CE+Dice model, test set)
 
@@ -94,16 +108,35 @@ The CE+Dice model underperformed due to early training instability (val_loss did
 | **True BG** | 7,706,179 | 1,004,942 |
 | **True Flood** | 1,191,964 | 5,661,715 |
 
-Errors concentrate at flood-background boundaries and in visually ambiguous zones (muddy water, shallow water over vegetation). See notebook Section 13 for full prediction visualizations with error maps.
+![Confusion Matrix](/mini-project-8/figures/confusion_matrix.png)
+
+The model correctly classifies the majority of pixels in both classes. The Flood miss rate (17.4% — 1,191,964 flood pixels labelled as background) is higher than the Background miss rate (11.5% — 1,004,942 background pixels labelled as flood). This asymmetry is consistent with the lower Flood IoU (0.6659) and reflects the greater visual ambiguity of flood pixels: water appearance varies with lighting, depth, and suspended sediment, making some flood regions look nearly identical to wet background.
 
 ---
+
+
+## Sample Predictions 
+
+![Sample Predictions](/mini-project-8/figures/predictions.png)
+
+Each row shows an input image, its ground truth mask, the model's prediction, and an error map (red = incorrect pixels). The model performs well on images with clear colour contrast between flood water and dry land. Errors concentrate at class boundaries rather than in region interiors. Large homogeneous flood or background regions are predicted correctly, while mistakes appear as thin rings at the flood-background transition. The worst predictions occur when flood water and background share similar tones (e.g., grey water under overcast skies, or muddy water near brown soil).
+
+---
+
+## Sample Confidence / Probabiltiy Map Visualization
+
+![Sample Confidence](/mini-project-8/figures/confidence_map.png)
+
+The probability maps show the softmax output for each class: brighter pixels indicate higher model confidence. P(Background) and P(Flood) are complementary: where one is bright, the other is dark. The model is highly confident (probability near 1.0) in the centres of large flood and background regions. Confidence drops at boundaries, where the probability values are closer to 0.5, reflecting genuine visual ambiguity. These low-confidence boundary zones correspond closely to the error regions visible in the error maps above.
+
+
 
 ## Team Member Contributions
 
 | Member | Contributions |
 |--------|--------------|
-| **Jacky Chen** | U-Net architecture, loss functions, training pipeline, evaluation metrics (IoU/Dice/confusion matrix), data augmentation, report |
-| **Eric** | Dataset acquisition and cleanup, data exploration, visualization code (predictions, probability maps, box plots), README |
+| **Jacky** | U-Net architecture, loss functions, training pipeline, data augmentation, README, report |
+| **Eric** | Dataset acquisition and cleanup, data exploration, evaluation metrics (IoU/Dice/confusion matrix), visualization code (predictions, probability maps, box plots) |
 
 ---
 
@@ -111,11 +144,17 @@ Errors concentrate at flood-background boundaries and in visually ambiguous zone
 
 ```
 mini-project-8/
-├── segmentation_local.ipynb   # Main notebook
+├── segmentation.ipynb             # Main notebook
 ├── README.md
+├── figures/                       # Saved plot images for README
+│   ├── training_curves.png
+│   ├── per_class_distribution.png
+│   ├── confusion_matrix.png
+│   ├── predictions.png
+│   └── confidence_map.png
 ├── data/
 │   └── flood-area-segmentation.zip   # Download manually from Kaggle
-├── checkpoints/               # Saved model weights (auto-created, git-ignored)
+├── checkpoints/                   # Saved model weights (auto-created, git-ignored)
 └── .gitignore
 ```
 
