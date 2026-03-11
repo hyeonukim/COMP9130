@@ -7,9 +7,13 @@ Eric Kim & Jacky Chen | March 2026
 
 ## Problem Description
 
-This project applies semantic segmentation to aerial and UAV imagery of flooded areas. A U-Net model labels every pixel as either **Background** or **Flood**, enabling automated flood extent mapping for emergency response teams.
+Natural disasters like floods cause devastating loss of life and infrastructure damage every year. When a flood occurs, emergency response teams need to know fast which areas are underwater, where roads are impassable, and where to deploy rescue resources. Traditionally, this mapping is done manually by analysts reviewing aerial imagery, which is slow and cannot scale to a large disaster zone.
 
-**Dataset:** [Flood Area Segmentation](https://www.kaggle.com/datasets/faizalkarim/flood-area-segmentation) — 290 aerial images with binary masks (flood / no-flood). After removing 41 corrupt pairs, 249 valid image-mask pairs were used.
+Semantic segmentation using deep learning offers a faster alternative: given an aerial image, a trained model can label every pixel as flood water or dry land in seconds, producing an automated flood extent map that would take a human analyst hours to create.
+
+This project builds a U-Net model trained on aerial and UAV imagery to perform binary flood segmentation: labeling every pixel as either **Background** (dry land, vegetation, structures) or **Flood** (water-covered areas). The model is trained and evaluated on the Kaggle Flood Area Segmentation dataset, which contains real aerial imagery captured during flood events.
+
+**Dataset:** [Flood Area Segmentation](https://www.kaggle.com/datasets/faizalkarim/flood-area-segmentation) — 290 aerial images with binary pixel-level masks. After programmatically detecting and removing 41 corrupt image-mask pairs, 249 valid pairs remained. Images were resized to 640×640 for training, exceeding the 256×256 resolution used in class to capture the fine boundary detail required for accurate flood mapping.
 
 | Split | Images |
 |-------|--------|
@@ -23,21 +27,42 @@ This project applies semantic segmentation to aerial and UAV imagery of flooded 
 
 ---
 
+## File Structure
+
+```
+mini-project-8/
+├── segmentation.ipynb             # Main notebook
+├── README.md
+├── figures/                       # Saved plot images for README
+│   ├── training_curves.png
+│   ├── per_class_distribution.png
+│   ├── confusion_matrix.png
+│   ├── predictions.png
+│   └── confidence_map.png
+├── data/
+│   └── flood-area-segmentation.zip   # Download manually from Kaggle
+├── checkpoints/                   # Saved model weights (auto-created, git-ignored)
+└── .gitignore
+```
+
+---
+
 ## Setup Instructions
 
-### 1. Clone the repository
+### Option A — Local GPU
+
+#### 1. Clone the repository
 ```bash
 git clone <your-repo-url>
 cd mini-project-8
 ```
 
-### 2. Install dependencies
+#### 2. Install dependencies
 ```bash
 pip install tensorflow numpy matplotlib scikit-learn pillow
 ```
 
-### 3. Download the dataset
-
+#### 3. Download the dataset
 1. Go to https://www.kaggle.com/datasets/faizalkarim/flood-area-segmentation
 2. Click **Download** to get the zip file
 3. Place it in the `data/` folder:
@@ -45,14 +70,33 @@ pip install tensorflow numpy matplotlib scikit-learn pillow
 mini-project-8/
   data/
     flood-area-segmentation.zip
-  segmentation_local.ipynb
+  segmentation.ipynb
 ```
+
+---
+
+### Option B — Google Colab (no GPU required)
+
+1. Go to [Google Colab](https://colab.research.google.com) and open `segmentation.ipynb` from your GitHub repo:
+   - **File → Open notebook → GitHub** → paste your repo URL
+2. Enable GPU: **Runtime → Change runtime type → T4 GPU**
+3. Upload your `kaggle.json` API token when prompted by the first notebook cell:
+   - Get it from kaggle.com → Account → Settings → API → **Create New Token**
+   - The first cell handles placing it in the correct location automatically
+4. Run all cells in order — the dataset will be downloaded automatically via the Kaggle API
+
+> **Note:** Colab sessions disconnect after ~12 hours of inactivity. Make sure `ModelCheckpoint` is saving to Google Drive or download your `.keras` checkpoint files before the session ends. To save to Drive, add this before training:
+> ```python
+> from google.colab import drive
+> drive.mount('/content/drive')
+> # Then set checkpoint path to '/content/drive/MyDrive/checkpoints/unet_ce_best.keras'
+> ```
 
 ---
 
 ## How to Run
 
-Open `segmentation_local.ipynb` in Jupyter and run cells in order.
+Open `segmentation.ipynb` in Jupyter and run cells in order.
 
 | Section | Description |
 |---------|-------------|
@@ -94,7 +138,7 @@ Both models were trained for 35 epochs. Model A (CE) converged steadily, with va
 The CE+Dice model underperformed due to early training instability (val_loss did not improve for 14 epochs, spiking to 29.6 at epoch 3). With mild class imbalance (58.7% / 41.3%), CE was sufficient and the added Dice term introduced more noise than benefit.
 
 
-### Per Class Distribtion
+### Per-Class Distribtion
 
 ![Per Class Distribution](/mini-project-8/figures/per_class_distribution.png)
 
@@ -123,7 +167,7 @@ Each row shows an input image, its ground truth mask, the model's prediction, an
 
 ---
 
-## Sample Confidence / Probabiltiy Map Visualization
+## Sample Confidence / Probability Map Visualization
 
 ![Sample Confidence](/mini-project-8/figures/confidence_map.png)
 
@@ -135,28 +179,8 @@ The probability maps show the softmax output for each class: brighter pixels ind
 
 | Member | Contributions |
 |--------|--------------|
-| **Jacky** | U-Net architecture, loss functions, training pipeline, data augmentation, README, report |
-| **Eric** | Dataset acquisition and cleanup, data exploration, evaluation metrics (IoU/Dice/confusion matrix), visualization code (predictions, probability maps, box plots) |
-
----
-
-## File Structure
-
-```
-mini-project-8/
-├── segmentation.ipynb             # Main notebook
-├── README.md
-├── figures/                       # Saved plot images for README
-│   ├── training_curves.png
-│   ├── per_class_distribution.png
-│   ├── confusion_matrix.png
-│   ├── predictions.png
-│   └── confidence_map.png
-├── data/
-│   └── flood-area-segmentation.zip   # Download manually from Kaggle
-├── checkpoints/                   # Saved model weights (auto-created, git-ignored)
-└── .gitignore
-```
+| **Jacky** | Data exploration, evaluation metrics (IoU/Dice/confusion matrix), visualizations (predictions, probability maps, box plots), README, report |
+| **Eric** | Dataset acquisition and cleanup ,U-Net architecture, loss functions, training pipeline, data augmentation, hyperparameter tuning, model checkpointing |
 
 ---
 
